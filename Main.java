@@ -1,7 +1,4 @@
-public class Main {
-    public static void main(String[] args) {
-        String paragraph = """
-            Constructor –
+Constructor –
 1. Write a java program to calculate area and circumference of a circle using a constructor.
 File Name: Main.java
 Code:
@@ -3037,10 +3034,4 @@ public class JDBCCallableExample {
  System.out.println("Program terminated.");
  }
  }
-}
-
-            """;
-
-        System.out.println(paragraph);
-    }
 }
