@@ -295,4 +295,207 @@ print("After concatenation:")
 L1.display()  # Ensure L1 is updated
 L2.display()  # Ensure L2 is unchanged
 
+6.queue
+
+class SimpleQueue:
+    def __init__(self):
+        self.queue = []
+
+    def enqueue(self, item):
+        self.queue.append(item)
+
+    def dequeue(self):
+        if not self.is_empty():
+            return self.queue.pop(0)
+        return "Queue is empty"
+
+    def is_empty(self):
+        return len(self.queue) == 0
+
+    def display(self):
+        print("Queue:", self.queue)
+
+# Test
+q = SimpleQueue()
+q.enqueue(10)
+q.enqueue(20)
+q.display()  # Output: Queue: [10, 20]
+print(q.dequeue())  # Output: 10
+q.display()  # Output: Queue: [20]
+
+>> circular queue
+
+class CircularQueue:
+    def __init__(self, size):
+        self.queue = [None] * size
+        self.size = size
+        self.front = self.rear = -1
+
+    def enqueue(self, item):
+        if (self.rear + 1) % self.size == self.front:
+            print("Queue is full")
+            return
+        elif self.front == -1:  # First element
+            self.front = self.rear = 0
+        else:
+            self.rear = (self.rear + 1) % self.size
+        self.queue[self.rear] = item
+
+    def dequeue(self):
+        if self.front == -1:
+            return "Queue is empty"
+        data = self.queue[self.front]
+        if self.front == self.rear:  # Only one element
+            self.front = self.rear = -1
+        else:
+            self.front = (self.front + 1) % self.size
+        return data
+
+    def display(self):
+        if self.front == -1:
+            print("Queue is empty")
+            return
+        print("Queue elements:", end=" ")
+        i = self.front
+        while True:
+            print(self.queue[i], end=" ")
+            if i == self.rear:
+                break
+            i = (i + 1) % self.size
+        print()
+
+# Test
+cq = CircularQueue(5)
+cq.enqueue(10)
+cq.enqueue(20)
+cq.enqueue(30)
+cq.display()  # Output: Queue elements: 10 20 30
+print(cq.dequeue())  # Output: 10
+cq.display()  # Output: Queue elements: 20 30
+
+7// graph
+
+bfs/dfs
+
+from collections import deque
+
+def bfs(graph, start):
+    visited = set()
+    queue = deque([start])
+    result = []
+
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            result.append(node)
+            visited.add(node)
+            queue.extend(graph[node])
+
+    return result
+
+# Example graph
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': [],
+    'F': []
+}
+print("BFS Traversal:", bfs(graph, 'A'))  # Output: BFS Traversal: ['A', 'B', 'C', 'D', 'E', 'F']
+
+
+def dfs(graph, node, visited=None):
+    if visited is None:
+        visited = set()
+    visited.add(node)
+    print(node, end=" ")
+    for neighbor in graph[node]:
+        if neighbor not in visited:
+            dfs(graph, neighbor, visited)
+
+# Example graph
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': [],
+    'F': []
+}
+print("DFS Traversal:", end=" ")
+dfs(graph, 'A')  # Output: DFS Traversal: A B D E C F
+
+1. Linear Search
+
+def linear_search(arr, target):
+    for i in range(len(arr)):
+        if arr[i] == target:
+            return i  # Return the index if found
+    return -1  # Return -1 if not found
+
+# Test
+arr = [5, 8, 2, 9, 1]
+target = 9
+result = linear_search(arr, target)
+if result != -1:
+    print(f"Element {target} found at index: {result}")
+else:
+    print(f"Element {target} not found.")
+# Output: Element 9 found at index: 3
+
+binary
+
+def binary_search_iterative(arr, target):
+    low, high = 0, len(arr) - 1
+    while low <= high:
+        mid = (low + high) // 2
+        if arr[mid] == target:
+            return mid  # Element found at mid
+        elif arr[mid] < target:
+            low = mid + 1  # Search in the right half
+        else:
+            high = mid - 1  # Search in the left half
+    return -1  # Element not found
+
+# Test
+arr = [1, 3, 5, 7, 9]
+target = 7
+result = binary_search_iterative(arr, target)
+if result != -1:
+    print(f"Element {target} found at index: {result}")
+else:
+    print(f"Element {target} not found.")
+# Output: Element 7 found at index: 3
+
+9. 1. Bubble Sort
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):  # Outer loop for each pass
+        for j in range(0, n - i - 1):  # Inner loop for comparisons
+            if arr[j] > arr[j + 1]:  # Compare adjacent elements
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]  # Swap if needed
+
+# Test
+arr = [64, 34, 25, 12, 22, 11, 90]
+bubble_sort(arr)
+print("Sorted array:", arr)
+# Output: Sorted array: [11, 12, 22, 25, 34, 64, 90]
+----------
+def quick_sort(arr):
+    if len(arr) <= 1:  # Base case
+        return arr
+    pivot = arr[len(arr) // 2]  # Choose the middle element as pivot
+    left = [x for x in arr if x < pivot]  # Elements less than pivot
+    middle = [x for x in arr if x == pivot]  # Elements equal to pivot
+    right = [x for x in arr if x > pivot]  # Elements greater than pivot
+    return quick_sort(left) + middle + quick_sort(right)  # Recursive call
+
+# Test
+arr = [10, 7, 8, 9, 1, 5]
+sorted_arr = quick_sort(arr)
+print("Sorted array:", sorted_arr)
+# Output: Sorted array: [1, 5, 7, 8, 9, 10]
+
+
 
