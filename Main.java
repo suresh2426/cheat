@@ -2983,7 +2983,19 @@ public class JDBCCallableExample {
  }
  }
 }
+/*DELIMITER //
 
+CREATE PROCEDURE GetEmployeeDetails(
+    IN empId INT
+)
+BEGIN
+    SELECT id, name, salary
+    FROM employees
+    WHERE id = empId;
+END //
+
+DELIMITER ;
+*/
 38. Write a program to connect to a database and update the salary of an employee using a stored
 procedure with an IN-OUT parameter.
 File Name: JDBCCallableExample.java
@@ -3035,6 +3047,34 @@ public class JDBCCallableExample {
  }
  }
 }
+/*DELIMITER //
+
+CREATE PROCEDURE UpdateEmployeeSalary(
+    IN empId INT,
+    INOUT newSal DOUBLE
+)
+BEGIN
+    DECLARE empExists INT;
+    
+    -- Check if the employee exists
+    SELECT COUNT(*) INTO empExists FROM employees WHERE id = empId;
+
+    IF empExists > 0 THEN
+        -- Update the salary
+        UPDATE employees
+        SET salary = newSal
+        WHERE id = empId;
+
+        -- Return the updated salary
+        SELECT salary INTO newSal FROM employees WHERE id = empId;
+    ELSE
+        -- If no employee found, set newSal to NULL
+        SET newSal = NULL;
+    END IF;
+END //
+
+DELIMITER ;
+*/
 39.Write a program jdbc crud opration.
  file name: simpleCrudOprestion.
  import java.sql.*;
