@@ -3035,3 +3035,152 @@ public class JDBCCallableExample {
  }
  }
 }
+39.Write a program jdbc crud opration.
+ file name: simpleCrudOprestion.
+ import java.sql.*;
+import java.util.Scanner;
+
+public class SimpleCrudOperations {
+    public static void main(String[] args) {
+        // Load JDBC Driver
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // Database Connection Details
+        String CONN_STRING = "jdbc:mysql://localhost:3306/mca202426";
+        String user = "root";
+        String password = "";
+
+        // Main CRUD Operations Menu
+        try (Scanner scanner = new Scanner(System.in);
+             Connection connection = DriverManager.getConnection(CONN_STRING, user, password)) {
+
+            while (true) {
+                System.out.println("\nCRUD Operations Menu:");
+                System.out.println("1. Create Table");
+                System.out.println("2. Insert Record");
+                System.out.println("3. Read Records");
+                System.out.println("4. Update Record");
+                System.out.println("5. Delete Record");
+                System.out.println("6. Exit");
+                System.out.print("Choose an option: ");
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline character
+
+                switch (choice) {
+                    case 1: createTable(connection); break;
+                    case 2: insertRecord(scanner, connection); break;
+                    case 3: readRecords(connection); break;
+                    case 4: updateRecord(scanner, connection); break;
+                    case 5: deleteRecord(scanner, connection); break;
+                    case 6: System.out.println("Exiting..."); return;
+                    default: System.out.println("Invalid choice. Try again.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to Create Table
+    private static void createTable(Connection connection) {
+        String query = "CREATE TABLE IF NOT EXISTS users (" +
+                       "user_id INT PRIMARY KEY AUTO_INCREMENT, " +
+                       "username VARCHAR(20), " +
+                       "email VARCHAR(35))";
+        try (Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(query);
+            System.out.println("Table 'users' created successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to Insert Record
+    private static void insertRecord(Scanner scanner, Connection connection) {
+        String query = "INSERT INTO users (username, email) VALUES (?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            System.out.print("Username: ");
+            String username = scanner.nextLine();
+            System.out.print("Email: ");
+            String email = scanner.nextLine();
+
+            pstmt.setString(1, username);
+            pstmt.setString(2, email);
+            pstmt.executeUpdate();
+            System.out.println("Record inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to Read Records
+    private static void readRecords(Connection connection) {
+        String query = "SELECT * FROM users";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            System.out.println("User Records:");
+            while (rs.next()) {
+                System.out.println("ID: " + rs.getInt("users") + 
+                                   ", Username: " + rs.getString("username") +
+                                   ", Email: " + rs.getString("email"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to Update Record
+    private static void updateRecord(Scanner scanner, Connection connection) {
+        String query = "UPDATE users SET username = ?, email = ? WHERE user_id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            System.out.print("Enter User ID to update: ");
+            int userId = scanner.nextInt();
+            scanner.nextLine(); // Consume newline character
+
+            System.out.print("New Username: ");
+            String username = scanner.nextLine();
+            System.out.print("New Email: ");
+            String email = scanner.nextLine();
+
+            pstmt.setString(1, username);
+            pstmt.setString(2, email);
+            pstmt.setInt(3, userId);
+
+            int rowsUpdated = pstmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Record updated successfully.");
+            } else {
+                System.out.println("No record found with that ID.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to Delete Record
+    private static void deleteRecord(Scanner scanner, Connection connection) {
+        String query = "DELETE FROM users WHERE user_id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            System.out.print("Enter User ID to delete: ");
+            int userId = scanner.nextInt();
+
+            pstmt.setInt(1, userId);
+
+            int rowsDeleted = pstmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Record deleted successfully.");
+            } else {
+                System.out.println("No record found with that ID.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
