@@ -476,6 +476,59 @@ print("After deleting 20:")
 cll.traverse()
 
 
+****** Reversed Linked list ******
+
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def append(self, data):
+        new_node = Node(data)
+        if not self.head:
+            self.head = new_node
+        else:
+            current = self.head
+            while current.next:
+                current = current.next
+            current.next = new_node
+
+    def print_list(self):
+        current = self.head
+        while current:
+            print(current.data, end=" -> ")
+            current = current.next
+        print("None")
+
+    def reverse(self):
+        prev, current = None, self.head
+        while current:
+            current.next, prev, current = prev, current, current.next
+        self.head = prev
+
+
+# Example usage
+ll = LinkedList()
+for val in [1, 2, 3, 4]:
+    ll.append(val)
+
+print("Original:")
+ll.print_list()
+
+ll.reverse()
+
+print("Reversed:")
+ll.print_list()
+
+
+
+
+
 # Queue
 
 #*********** Basic Operation **********
@@ -568,6 +621,7 @@ Q.printQ()
 print("Queue after Dequeue")
 Q.dequeue()
 Q.printQ()
+
 
 
 
@@ -1048,3 +1102,75 @@ def binary_search(arr, li, ui, ele):
 arr = [1, 2, 3, 4, 5]
 ele = 2
 binary_search(arr, 0, len(arr) - 1, ele)
+
+
+
+#********merge sort *********
+
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+
+    return sorted_merge(left, right)
+
+
+def sorted_merge(left, right):
+    result = []
+    while left and right:
+        if left[0] < right[0]:
+            result.append(left.pop(0))
+        else:
+            result.append(right.pop(0))
+    return result + left + right
+
+
+# Example usage
+arr = [5, 2, 9, 1, 5, 6]
+print("Original:", arr)
+print("Sorted:", merge_sort(arr))
+
+
+
+#***** merging list *****
+
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def merge_two_sorted_lists(l1, l2):
+    # Create a dummy node to serve as the start of the merged list
+    dummy = ListNode()
+    current = dummy
+    
+    # Traverse both lists and merge
+    while l1 and l2:
+        if l1.val < l2.val:
+            current.next = l1
+            l1 = l1.next
+        else:
+            current.next = l2
+            l2 = l2.next
+        current = current.next
+
+    # If one list is not empty, append it
+    current.next = l1 if l1 else l2
+
+    return dummy.next
+
+# Example usage:
+l1 = ListNode(1, ListNode(2, ListNode(4)))
+l2 = ListNode(1, ListNode(3, ListNode(4)))
+
+merged_list = merge_two_sorted_lists(l1, l2)
+
+# Print the result
+while merged_list:
+    print(merged_list.val, end=" -> ")
+    merged_list = merged_list.next
+print("None")
